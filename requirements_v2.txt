@@ -1,0 +1,27 @@
+# Fintech Career Intelligence Bot v2.0 - AI Powered
+# Requirements
+
+# Core Framework
+gradio==4.19.2
+
+# Data Processing
+pandas==2.0.3
+pdfplumber==0.10.2
+
+# Machine Learning (Traditional)
+scikit-learn==1.3.2
+
+# HTTP Requests (for API calls)
+requests>=2.31.0
+
+# Optional: For local LLM support (alternative to OpenAI)
+# openai>=1.0.0
+
+# Optional: For embeddings and vector search (RAG enhancement)
+# sentence-transformers>=2.2.0
+# faiss-cpu>=1.7.4
+# chromadb>=0.4.0
+
+# Optional: For advanced NLP
+# spacy>=3.7.0
+# transformers>=4.35.0
