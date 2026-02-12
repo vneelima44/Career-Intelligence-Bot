@@ -344,7 +344,7 @@ Seidenberg School of CSIS
 
 ## 🙏 Acknowledgments
 
-- **Professor** - CS667 Practical Data Science, Pace University
+- **Professor** - Professor Yiqiao Yin - CS667 Practical Data Science, Pace University
 - **Groq** - Free LLM API access
 - **Gradio** - Easy ML web interfaces
 - **Anthropic Claude** - Development assistance
