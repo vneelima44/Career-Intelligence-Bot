@@ -1,6 +1,6 @@
-gradio==4.19.2
-pandas==2.0.3
-pdfplumber==0.10.2
-scikit-learn==1.3.2
+gradio
+pandas
+pdfplumber
+scikit-learn
 requests>=2.31.0
 python-dotenv>=1.0.0
