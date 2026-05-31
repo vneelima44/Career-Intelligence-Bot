@@ -1,9 +1,9 @@
 """
-Resume X-Ray — Fintech Edition (v1)
+Resume X-Ray â Fintech Edition (v1)
 Author: Neelima Verma | MS Data Science, Pace University
 
 A diagnostic tool that audits resumes against Fintech data/analytics roles
-and surfaces hidden rejection reasons — before you apply.
+and surfaces hidden rejection reasons â before you apply.
 
 Built with: Groq (Llama 3.3 70B), Gradio, pdfplumber
 
@@ -246,7 +246,7 @@ SENIORITY_EXPECTATIONS = {
 
 
 # ============================================================
-# SKILL SYNONYMS — word-boundary matched so "r" doesn't match
+# SKILL SYNONYMS â word-boundary matched so "r" doesn't match
 # inside words like "reporting" or "engineer"
 # ============================================================
 SKILL_SYNONYMS = {
@@ -284,7 +284,7 @@ def has_word(needle: str, haystack: str) -> bool:
     haystack_lower = haystack.lower()
 
     if " " not in needle_lower and "-" not in needle_lower:
-        # Single word — straight word-boundary match
+        # Single word â straight word-boundary match
         pattern = r'(?<![a-zA-Z0-9])' + re.escape(needle_lower) + r'(?![a-zA-Z0-9])'
         return bool(re.search(pattern, haystack_lower))
 
@@ -328,11 +328,11 @@ def extract_years_experience(text: str) -> int:
     """Estimate years of experience from resume text.
 
     Strategy:
-    1. Try explicit 'X+ years ...' patterns first — most reliable signal.
+    1. Try explicit 'X+ years ...' patterns first â most reliable signal.
        Catches: 'X years of experience', 'X+ years in [domain]',
                 'over X years', 'X years building/leading/managing'.
-    2. Fall back to summing year ranges. Handles both 'YYYY – YYYY'
-       and 'Month YYYY – Month YYYY' formats.
+    2. Fall back to summing year ranges. Handles both 'YYYY â YYYY'
+       and 'Month YYYY â Month YYYY' formats.
     """
     text_lower = text.lower()
 
@@ -341,7 +341,7 @@ def extract_years_experience(text: str) -> int:
         r'(\d+)\+?\s*(?:years?|yrs?)\s*(?:of\s+)?experience',
         # 'experience (of) X+ years'
         r'experience\s*(?:of\s+)?(\d+)\+?\s*(?:years?|yrs?)',
-        # 'X+ years <verb/preposition>' — catches '10 years applying analytical methods',
+        # 'X+ years <verb/preposition>' â catches '10 years applying analytical methods',
         # '10+ years in regulated financial services', 'X years working in', etc.
         r'(\d+)\+?\s*(?:years?|yrs?)\s+(?:in|across|with|of|at|leading|managing|building|'
         r'hands[\s-]on|spanning|developing|applying|delivering|supporting|working|driving|'
@@ -355,8 +355,8 @@ def extract_years_experience(text: str) -> int:
             return int(m.group(1))
 
     # Year-range fallback. The optional '(?:[a-zA-Z]+\.?\s+)?' before the
-    # end year handles 'Feb 2014 – Jul 2024' style (skips 'Jul ' to find 2024).
-    year_range = r'(20\d{2}|19\d{2})\s*[-–]\s*(?:[a-zA-Z]+\.?\s+)?(20\d{2}|19\d{2}|present|current)'
+    # end year handles 'Feb 2014 â Jul 2024' style (skips 'Jul ' to find 2024).
+    year_range = r'(20\d{2}|19\d{2})\s*[-â]\s*(?:[a-zA-Z]+\.?\s+)?(20\d{2}|19\d{2}|present|current)'
     matches = re.findall(year_range, text_lower)
     if matches:
         total = 0
@@ -391,7 +391,7 @@ def parse_resume(pdf_path: str) -> CandidateProfile:
 
 
 # ============================================================
-# SCORING ENGINE — 5 dimensions
+# SCORING ENGINE â 5 dimensions
 # ============================================================
 def score_skill_match(candidate: CandidateProfile, role: str) -> DimensionScore:
     role_def = FINTECH_ROLES[role]
@@ -514,7 +514,7 @@ def score_keyword_narrative_balance(candidate: CandidateProfile) -> DimensionSco
         return DimensionScore(
             score=30,
             evidence=["Resume text too short to analyze"],
-            gaps=["Resume may be image-heavy or too brief — extract text-based PDF"]
+            gaps=["Resume may be image-heavy or too brief â extract text-based PDF"]
         )
 
     narrative_connectors = ["which", "because", "led to", "resulting", "by",
@@ -577,7 +577,7 @@ def score_modern_stack(candidate: CandidateProfile, role: str) -> DimensionScore
 
 
 # ============================================================
-# HIDDEN REJECTION DETECTOR — the killer feature
+# HIDDEN REJECTION DETECTOR â the killer feature
 # ============================================================
 def detect_hidden_rejections(
     candidate: CandidateProfile,
@@ -652,7 +652,7 @@ def detect_hidden_rejections(
 
 
 # ============================================================
-# TOP FIXES — deterministic, ranked by lowest dimension scores
+# TOP FIXES â deterministic, ranked by lowest dimension scores
 # ============================================================
 def generate_top_fixes(
     scores: Dict[str, DimensionScore],
@@ -695,7 +695,7 @@ def generate_top_fixes(
             tools = role_def["modern_tools"][:2]
             fix["action"] = (
                 f"Add modern tooling for {role}: {', '.join([t.title() for t in tools])}. "
-                f"Path: tutorial → portfolio project → resume bullet."
+                f"Path: tutorial â portfolio project â resume bullet."
             )
 
         if "action" in fix:
@@ -705,7 +705,7 @@ def generate_top_fixes(
 
 
 # ============================================================
-# VERDICT — single Groq call with deterministic fallback
+# VERDICT â single Groq call with deterministic fallback
 # ============================================================
 def call_groq(prompt: str, system: str = None, max_tokens: int = 200) -> str:
     if not GROQ_API_KEY:
@@ -795,9 +795,9 @@ def generate_verdict(
 # REPORT BUILDER
 # ============================================================
 def score_emoji(s: int) -> str:
-    if s >= 75: return "🟢"
-    if s >= 50: return "🟡"
-    return "🔴"
+    if s >= 75: return "ð¢"
+    if s >= 50: return "ð¡"
+    return "ð´"
 
 
 def readiness_label(s: int) -> str:
@@ -831,8 +831,8 @@ def build_report_markdown(
         elif level == "Mid":
             suggested = "Senior"
         mismatch_banner = (
-            f"\n> ⚠️ **Heads up — possible level mismatch.** You selected **{level}** "
-            f"(typical {exp['min_years']}–{exp['max_years']} yrs) but your resume "
+            f"\n> â ï¸ **Heads up â possible level mismatch.** You selected **{level}** "
+            f"(typical {exp['min_years']}â{exp['max_years']} yrs) but your resume "
             f"shows **{candidate.years_experience} years** of experience, "
             f"about {over_by} years above the typical {level} range. "
             f"For more accurate scoring, consider re-running with **{suggested}** level.\n"
@@ -840,26 +840,26 @@ def build_report_markdown(
     elif candidate.years_experience < exp["min_years"]:
         short_by = exp["min_years"] - candidate.years_experience
         mismatch_banner = (
-            f"\n> ⚠️ **Heads up — possible level mismatch.** You selected **{level}** "
+            f"\n> â ï¸ **Heads up â possible level mismatch.** You selected **{level}** "
             f"(typical {exp['min_years']}+ yrs) but your resume shows "
             f"**{candidate.years_experience} years**, {short_by} years below the typical bar. "
             f"Scoring assumes you're aiming higher than current experience suggests.\n"
         )
 
-    md = f"""# 🩻 Resume X-Ray Report
+    md = f"""# ð©» Resume X-Ray Report
 
 **Target:** {level} {role} in Fintech ({location})
 **Resume Experience Detected:** {candidate.years_experience} years
 {mismatch_banner}
 ---
 
-## 🎯 The Verdict
+## ð¯ The Verdict
 
 > {verdict}
 
 ---
 
-## 📊 Score Card
+## ð Score Card
 
 | Diagnostic | Score | Read |
 |------------|-------|------|
@@ -869,9 +869,9 @@ def build_report_markdown(
 
 ---
 
-## 🔍 Diagnostic Breakdown
+## ð Diagnostic Breakdown
 
-### 1. Skill Match — {score_emoji(scores['skill_match'].score)} {scores['skill_match'].score}/100
+### 1. Skill Match â {score_emoji(scores['skill_match'].score)} {scores['skill_match'].score}/100
 """
     for ev in scores["skill_match"].evidence:
         md += f"- {ev}\n"
@@ -880,7 +880,7 @@ def build_report_markdown(
         for g in scores["skill_match"].gaps:
             md += f"- {g}\n"
 
-    md += f"\n### 2. Seniority Signals ({level} bar) — {score_emoji(scores['seniority'].score)} {scores['seniority'].score}/100\n"
+    md += f"\n### 2. Seniority Signals ({level} bar) â {score_emoji(scores['seniority'].score)} {scores['seniority'].score}/100\n"
     for ev in scores["seniority"].evidence:
         md += f"- {ev}\n"
     if scores["seniority"].gaps:
@@ -888,7 +888,7 @@ def build_report_markdown(
         for g in scores["seniority"].gaps:
             md += f"- {g}\n"
 
-    md += f"\n### 3. Business Impact — {score_emoji(scores['impact'].score)} {scores['impact'].score}/100\n"
+    md += f"\n### 3. Business Impact â {score_emoji(scores['impact'].score)} {scores['impact'].score}/100\n"
     for ev in scores["impact"].evidence:
         md += f"- {ev}\n"
     if scores["impact"].gaps:
@@ -896,7 +896,7 @@ def build_report_markdown(
         for g in scores["impact"].gaps:
             md += f"- {g}\n"
 
-    md += f"\n### 4. Keyword vs Narrative Balance — {score_emoji(scores['narrative'].score)} {scores['narrative'].score}/100\n"
+    md += f"\n### 4. Keyword vs Narrative Balance â {score_emoji(scores['narrative'].score)} {scores['narrative'].score}/100\n"
     for ev in scores["narrative"].evidence:
         md += f"- {ev}\n"
     if scores["narrative"].gaps:
@@ -904,7 +904,7 @@ def build_report_markdown(
         for g in scores["narrative"].gaps:
             md += f"- {g}\n"
 
-    md += f"\n### 5. Modern Stack — {score_emoji(scores['modern_stack'].score)} {scores['modern_stack'].score}/100\n"
+    md += f"\n### 5. Modern Stack â {score_emoji(scores['modern_stack'].score)} {scores['modern_stack'].score}/100\n"
     for ev in scores["modern_stack"].evidence:
         md += f"- {ev}\n"
     if scores["modern_stack"].gaps:
@@ -912,27 +912,27 @@ def build_report_markdown(
         for g in scores["modern_stack"].gaps:
             md += f"- {g}\n"
 
-    md += "\n---\n\n## 🚨 Hidden Rejection Reasons\n\n"
+    md += "\n---\n\n## ð¨ Hidden Rejection Reasons\n\n"
     if rejections:
-        md += "*The silent reasons recruiters pass on resumes — even when keywords match.*\n\n"
+        md += "*The silent reasons recruiters pass on resumes â even when keywords match.*\n\n"
         for i, r in enumerate(rejections, 1):
             md += f"**{i}.** {r}\n\n"
     else:
-        md += "✅ No major hidden rejection signals detected. Your resume should clear initial screens.\n"
+        md += "â No major hidden rejection signals detected. Your resume should clear initial screens.\n"
 
-    md += "\n---\n\n## 🛠 Top Fixes (Priority Order)\n\n"
+    md += "\n---\n\n## ð  Top Fixes (Priority Order)\n\n"
     if top_fixes:
         for i, f in enumerate(top_fixes, 1):
             dim_label = f["dimension"].replace("_", " ").title()
             md += f"**{i}. {dim_label}** ({f['score']}/100)\n"
-            md += f"   → {f['action']}\n\n"
+            md += f"   â {f['action']}\n\n"
     else:
         md += "Your resume is in strong shape. Focus on tailoring it to specific job descriptions before applying.\n"
 
     md += """
 ---
 
-## ⚠️ Methodology
+## â ï¸ Methodology
 
 **What this X-Ray IS:** A rubric-based diagnostic. Word-boundary skill matching, role-specific seniority calibration, Fintech-KPI detection, and pattern-based rejection heuristics. One LLM call (Groq Llama 3.3 70B) generates the verdict.
 
@@ -947,7 +947,7 @@ def build_report_markdown(
 # MAIN ORCHESTRATOR
 # ============================================================
 # ============================================================
-# USAGE LOGGING — append a row to usage_log.csv each run AND
+# USAGE LOGGING â append a row to usage_log.csv each run AND
 # (optionally) submit to a Google Form so you can see metrics
 # in a Google Sheet.
 # Logs metadata only (no resume content, no PII).
@@ -1033,17 +1033,17 @@ def run_xray(resume_file, role: str, level: str, location: str, previous_state=N
         _post_to_form_async(flush_row)
 
     if resume_file is None:
-        return "❌ **Please upload your resume (PDF format).**", None
+        return "â **Please upload your resume (PDF format).**", None
 
     if role not in FINTECH_ROLES:
-        return f"❌ Role '{role}' not supported in v1. Available: {list(FINTECH_ROLES.keys())}", None
+        return f"â Role '{role}' not supported in v1. Available: {list(FINTECH_ROLES.keys())}", None
 
     if level not in SENIORITY_EXPECTATIONS:
-        return "❌ Level must be Junior, Mid, or Senior.", None
+        return "â Level must be Junior, Mid, or Senior.", None
 
     candidate = parse_resume(resume_file.name)
     if not candidate.raw_text:
-        return "❌ Could not read resume. Make sure it's a text-based PDF (not a scanned image).", None
+        return "â Could not read resume. Make sure it's a text-based PDF (not a scanned image).", None
 
     scores = {
         "skill_match": score_skill_match(candidate, role),
@@ -1115,7 +1115,7 @@ def run_xray(resume_file, role: str, level: str, location: str, previous_state=N
 
 def submit_feedback(feedback_text: str, role: str, level: str, location: str, pending_state):
     """Combine feedback with pending X-Ray data (if any) and submit one row.
-    Returns (status_message, new_state) — new_state cleared after submission.
+    Returns (status_message, new_state) â new_state cleared after submission.
     """
     print(f"[submit_feedback] called. pending_state present: {pending_state is not None}")
     if pending_state:
@@ -1123,7 +1123,7 @@ def submit_feedback(feedback_text: str, role: str, level: str, location: str, pe
 
     feedback_text = (feedback_text or "").strip()
     if not feedback_text:
-        return "⚠️ Please write some feedback before sending.", pending_state
+        return "â ï¸ Please write some feedback before sending.", pending_state
 
     if pending_state:
         # Combine: scores from the run + feedback text in one row
@@ -1131,7 +1131,7 @@ def submit_feedback(feedback_text: str, role: str, level: str, location: str, pe
         row["feedback"] = feedback_text[:1500]
         print(f"[submit_feedback] combining feedback with state, posting full row")
     else:
-        # Feedback without an X-Ray run — empty scores
+        # Feedback without an X-Ray run â empty scores
         row = {
             "timestamp": datetime.now().isoformat(timespec="seconds"),
             "role": role or "", "level": level or "", "location": location or "",
@@ -1140,21 +1140,24 @@ def submit_feedback(feedback_text: str, role: str, level: str, location: str, pe
             "impact": "", "narrative": "", "modern_stack": "",
             "feedback": feedback_text[:1500],
         }
-        print(f"[submit_feedback] no pending state — posting feedback-only row")
+        print(f"[submit_feedback] no pending state â posting feedback-only row")
 
     _write_csv_row(row)
     _post_to_form_async(row)
 
-    return "✅ Thanks — your feedback was received. It helps me make this tool better.", None
+    return "â Thanks â your feedback was received. It helps me make this tool better.", None
+
+
 
 
 def clear_ui_only():
     """Clear visible UI when user changes inputs.
-    Does NOT touch state — state is preserved until next run or feedback.
+    Does NOT touch state - state is preserved until next run or feedback.
     """
-    print(f"[clear_ui_only] user changed an input — clearing visible UI (state preserved)")
+    print(f"[clear_ui_only] user changed an input - clearing visible UI (state preserved)")
     return (
         "*Upload your resume and click Run X-Ray to get your diagnostic.*",
+        "",   # run_status
         "",   # feedback_box
         "",   # feedback_status
     )
@@ -1164,9 +1167,15 @@ def clear_ui_only():
 # GRADIO UI
 # ============================================================
 def build_ui():
-    with gr.Blocks(theme=gr.themes.Soft(), title="Resume X-Ray") as demo:
+    with gr.Blocks(
+        theme=gr.themes.Soft(),
+        title="Resume X-Ray",
+        css="""
+        .run-btn { font-size: 1.1em !important; }
+        """
+    ) as demo:
         gr.Markdown("""
-        # 🩻 Resume X-Ray
+        # U0001fa7b Resume X-Ray
         ### Find out why your resume is getting rejected — before you apply.
 
         A diagnostic tool for **Fintech data and analytics roles**. Audits your resume against role + level + location and surfaces the hidden reasons recruiters silently pass on you.
@@ -1174,37 +1183,36 @@ def build_ui():
         *5 diagnostic dimensions. One honest verdict. ~10 seconds.*
         """)
 
-        # Browser-session storage for the most recent X-Ray's scores.
-        # Used to combine with feedback (or flushed when inputs change).
         pending_run_state = gr.State(value=None)
 
         with gr.Row():
             with gr.Column(scale=1):
-                resume_file = gr.File(label="📄 Upload Resume (PDF)", file_types=[".pdf"])
+                resume_file = gr.File(label="U0001f4c4 Upload Resume (PDF)", file_types=[".pdf"])
                 role = gr.Dropdown(
-                    label="🎯 Target Role",
+                    label="U0001f3af Target Role",
                     choices=list(FINTECH_ROLES.keys()),
                     value="Data Analyst",
                 )
                 level = gr.Dropdown(
-                    label="📈 Target Seniority Level",
+                    label="U0001f4c8 Target Seniority Level",
                     choices=list(SENIORITY_EXPECTATIONS.keys()),
                     value="Senior",
                 )
                 location = gr.Dropdown(
-                    label="📍 Location",
+                    label="U0001f4cd Location",
                     choices=["Remote", "New York", "San Francisco", "Boston",
                              "Chicago", "Austin", "Charlotte", "Other"],
                     value="New York",
                 )
                 gr.Markdown("*Industry: **Fintech** (v1). Other industries coming soon.*")
-                submit = gr.Button("🩻 Run X-Ray", variant="primary", size="lg")
+                submit = gr.Button("U0001fa7b Run X-Ray", variant="primary", size="lg", elem_classes=["run-btn"])
 
             with gr.Column(scale=2):
+                run_status = gr.Markdown(value="", elem_id="run-status")
                 output = gr.Markdown(value="*Upload your resume and click Run X-Ray to get your diagnostic.*")
 
                 gr.Markdown("---")
-                gr.Markdown("### 💬 Tell us what to improve")
+                gr.Markdown("### U0001f4ac Tell us what to improve")
                 gr.Markdown(
                     "*Optional. Anything off? Score too harsh? Missing a role you'd want? "
                     "Type below and hit Send. Anonymous — no email captured.*"
@@ -1214,43 +1222,58 @@ def build_ui():
                     placeholder="e.g. 'The seniority bar felt too strict' or 'Add Marketing Analyst role'",
                     lines=3,
                 )
-                send_feedback_btn = gr.Button("Send Feedback", variant="secondary")
+                send_feedback_btn = gr.Button("U0001f4e4 Send Feedback", variant="primary")
                 feedback_status = gr.Markdown("")
 
         with gr.Accordion("⚙️ API Status", open=False):
             gr.Markdown(
                 f"- **Groq API (LLM verdict):** "
-                f"{'✅ Configured' if GROQ_API_KEY else '❌ Not set — verdict uses deterministic fallback'}"
+                f"{'\u2705 Configured' if GROQ_API_KEY else '\u274c Not set \u2014 verdict uses deterministic fallback'}"
             )
 
-        # Run X-Ray → updates output AND stores run data in state.
-        # State (previous run) is also passed in so run_xray can auto-flush it.
+        # -------------------------------------------------------
+        # Run X-Ray: show loading first, then run analysis
+        # -------------------------------------------------------
+        def set_loading():
+            return "⏳ **Analyzing your resume\u2026 this takes ~10 seconds. Please wait.**", ""
+
         submit.click(
+            fn=set_loading,
+            inputs=[],
+            outputs=[run_status, output],
+            show_progress="hidden",
+        ).then(
             fn=run_xray,
             inputs=[resume_file, role, level, location, pending_run_state],
             outputs=[output, pending_run_state],
+            show_progress="hidden",
+        ).then(
+            fn=lambda: "",
+            inputs=[],
+            outputs=[run_status],
+            show_progress="hidden",
         )
 
-        # Send Feedback → combines feedback with pending state, clears state
+        # Send Feedback
         send_feedback_btn.click(
             fn=submit_feedback,
             inputs=[feedback_box, role, level, location, pending_run_state],
             outputs=[feedback_status, pending_run_state],
+            show_progress="hidden",
         )
 
-        # When inputs change → clear UI but PRESERVE state.
-        # Using .upload()/.input() (user-driven only) instead of .change()
-        # so that programmatic updates from run_xray don't trigger this.
+        # When inputs change - clear UI but PRESERVE state
         resume_file.upload(
             fn=clear_ui_only,
             inputs=[],
-            outputs=[output, feedback_box, feedback_status],
+            outputs=[output, run_status, feedback_box, feedback_status],
         )
+
         for dd in [role, level, location]:
             dd.input(
                 fn=clear_ui_only,
                 inputs=[],
-                outputs=[output, feedback_box, feedback_status],
+                outputs=[output, run_status, feedback_box, feedback_status],
             )
 
     return demo
@@ -1261,7 +1284,7 @@ def build_ui():
 # ============================================================
 if __name__ == "__main__":
     print("=" * 60)
-    print("🩻 RESUME X-RAY v1 — Fintech Edition")
+    print("U0001fa7b RESUME X-RAY v1 — Fintech Edition")
     print("=" * 60)
     print(f"Roles: {len(FINTECH_ROLES)} | Levels: {len(SENIORITY_EXPECTATIONS)}")
     print(f"Groq API: {'✅' if GROQ_API_KEY else '❌'}")
