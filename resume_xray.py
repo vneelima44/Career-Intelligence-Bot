@@ -1181,7 +1181,7 @@ def clear_ui_only():
     Does NOT touch state - state is preserved until next run or feedback.
     """
     print(f"[clear_ui_only] user changed an input - clearing visible UI (state preserved)")
-    return (
+ # 🩻 Resume X-Ray   return (
         "*Upload your resume and click Run X-Ray to get your diagnostic.*",
         "",   # run_status
         "",   # feedback_box
@@ -1201,7 +1201,7 @@ def build_ui():
         """
     ) as demo:
         gr.Markdown("""
-        # >{ Resume X-Ray
+        # 🩻 Resume X-Ray
         ### Find out why your resume is getting rejected — before you apply.
 
         A diagnostic tool for **Fintech data and analytics roles**. Audits your resume against role + level + location and surfaces the hidden reasons recruiters silently pass on you.
